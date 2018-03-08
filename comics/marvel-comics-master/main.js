@@ -1,6 +1,6 @@
-var PUBLIC_KEY = "xxxxxxxxxxxxxx";
-var ts = "xxxxx";
-var hash = "xxxxxxxxxxxx";
+var PUBLIC_KEY = "9aa9e3583d9b753266038ba24568db26";
+var ts = "1520515127";
+var hash = "395613d2363f39658cad46a385eb4ecc";
 
 var limit = 25;
 
@@ -35,11 +35,11 @@ function displayComics(comics) {
     $("#result").html("");
     for(var i=0; i < comics.length; i++) {
         var imgSrc = comics[i].thumbnail.path + "/standard_xlarge." + comics[i].thumbnail.extension;
-        var html = "<li class='comics'>"
+        var html = "<li class='comics'><a href='pagePersonnage.html?id=" + comics[i].id + "'>";
         html += "<img class='thumb' src='" + imgSrc + "'>";
         html += "<span class='title'>" + comics[i].title + "</span>";
 
-        html += "</li>"
+        html += "</a></li>"
         $("#result").append(html);
     }
 }
@@ -63,6 +63,39 @@ function displayPagination(count, total, limit) {
 
 }
 
+function getCharacters() {
+
+    comicID = $_GET('id');
+    alert(comicID);
+    var url = 'https://gateway.marvel.com:443/v1/public/comics/' + comicID + '/characters?apikey=' + PUBLIC_KEY + '&hash=' + hash + '&ts=' + ts;
+    $.getJson(url, function(json_data) {
+        var hero = json_data.data.results[0];
+
+        var name = hero.name;
+        var portrait = hero.thumbnail.path + "/standard_xlarge." + hero.thumbnail.extension;
+        var description = hero.description;
+
+        alert(name);
+
+
+    });
+}
+
+function $_GET(param) {
+    var vars = {};
+    window.location.href.replace( location.hash, '' ).replace(
+        /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+        function( m, key, value ) { // callback
+            vars[key] = value !== undefined ? value : '';
+        }
+    );
+
+    if ( param ) {
+        return vars[param] ? vars[param] : null;
+    }
+    return vars;
+}
+
 $(document).ready(function() {
 
 
@@ -71,6 +104,8 @@ $(document).ready(function() {
     $( "#search" ).click(function() {
         getComics();
     });
+
+    getCharacters();
 
 });
 
